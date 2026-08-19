@@ -27,11 +27,12 @@ public class Create_Appoinment extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDialog1 = new javax.swing.JDialog();
+        jFrame1 = new javax.swing.JFrame();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        fnametxt = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         DentistNme = new javax.swing.JTextField();
@@ -39,6 +40,7 @@ public class Create_Appoinment extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox2 = new javax.swing.JComboBox<>();
         createPatientAccBtn = new javax.swing.JButton();
+        AppoinmentDatetxt = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 600));
@@ -60,14 +62,6 @@ public class Create_Appoinment extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel2.setText("Dentist");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, -1, -1));
-
-        fnametxt.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        fnametxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fnametxtActionPerformed(evt);
-            }
-        });
-        getContentPane().add(fnametxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, 360, 40));
 
         jLabel5.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel5.setText("Treatment Type");
@@ -109,12 +103,11 @@ public class Create_Appoinment extends javax.swing.JFrame {
         });
         getContentPane().add(createPatientAccBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 430, -1, 40));
 
+        AppoinmentDatetxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        getContentPane().add(AppoinmentDatetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 322, 350, 40));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void fnametxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fnametxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_fnametxtActionPerformed
 
     private void DentistNmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DentistNmeActionPerformed
         // TODO add your handling code here:
@@ -160,11 +153,13 @@ public class Create_Appoinment extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser AppoinmentDatetxt;
     private javax.swing.JTextField DentistNme;
     private javax.swing.JButton createPatientAccBtn;
-    private javax.swing.JTextField fnametxt;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JDialog jDialog1;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
