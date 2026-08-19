@@ -5,15 +5,9 @@
  */
 package view;
 
-/**
- *
- * @author ashan
- */
+
 public class AdminDashboardView1 extends javax.swing.JFrame {
 
-    /**
-     * Creates new form AdminDashboardView
-     */
     public AdminDashboardView1() {
         initComponents();
     }
