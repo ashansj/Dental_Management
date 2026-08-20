@@ -5,6 +5,13 @@
  */
 package view;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ashan
@@ -38,17 +45,19 @@ public class DentistUpdateView extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        Date = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
-        jSpinner2 = new javax.swing.JSpinner();
+        STime = new javax.swing.JSpinner();
+        ETime = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        createPatientAccBtn = new javax.swing.JButton();
+        AmPm1 = new javax.swing.JComboBox<>();
+        AmPm2 = new javax.swing.JComboBox<>();
+        UpdateDentestStatus = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        WorkStatus = new javax.swing.JComboBox<>();
+        jPanel5 = new javax.swing.JPanel();
+        DocName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -171,37 +180,60 @@ public class DentistUpdateView extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel4.setText("Work Date");
 
-        jSpinner1.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        jSpinner1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        STime.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
+        STime.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jSpinner2.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        jSpinner2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        ETime.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
+        ETime.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jLabel5.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel5.setText("Planned End time");
 
-        jComboBox1.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AM", "PM" }));
+        AmPm1.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
+        AmPm1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AM", "PM" }));
 
-        jComboBox2.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AM", "PM" }));
+        AmPm2.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
+        AmPm2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AM", "PM" }));
 
-        createPatientAccBtn.setBackground(new java.awt.Color(0, 102, 102));
-        createPatientAccBtn.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
-        createPatientAccBtn.setForeground(new java.awt.Color(255, 255, 255));
-        createPatientAccBtn.setText("Update Status");
-        createPatientAccBtn.setToolTipText("");
-        createPatientAccBtn.addActionListener(new java.awt.event.ActionListener() {
+        UpdateDentestStatus.setBackground(new java.awt.Color(0, 102, 102));
+        UpdateDentestStatus.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
+        UpdateDentestStatus.setForeground(new java.awt.Color(255, 255, 255));
+        UpdateDentestStatus.setText("Update Status");
+        UpdateDentestStatus.setToolTipText("");
+        UpdateDentestStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createPatientAccBtnActionPerformed(evt);
+                UpdateDentestStatusActionPerformed(evt);
             }
         });
 
         jLabel9.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel9.setText("Work Date");
 
-        jComboBox3.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pending", "Available", "Unavailable" }));
+        WorkStatus.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
+        WorkStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pending", "Available", "Unavailable" }));
+
+        jPanel5.setBackground(new java.awt.Color(0, 102, 153));
+
+        DocName.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
+        DocName.setForeground(new java.awt.Color(255, 255, 255));
+        DocName.setText("jLabel10");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(DocName)
+                .addContainerGap(440, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(DocName)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -214,57 +246,61 @@ public class DentistUpdateView extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGap(42, 42, 42)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Date, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(STime, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(AmPm1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel5)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ETime, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(AmPm2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel4)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(172, 172, 172)
+                                .addComponent(UpdateDentestStatus))
                             .addComponent(jLabel9)
-                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(201, 201, 201)
-                        .addComponent(createPatientAccBtn)))
+                            .addComponent(WorkStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 790, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Date, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(WorkStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(STime, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(AmPm1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(43, 43, 43)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(ETime, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(AmPm2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(60, 60, 60)
-                        .addComponent(createPatientAccBtn))))
+                        .addComponent(UpdateDentestStatus)
+                        .addGap(76, 76, 76))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -285,70 +321,48 @@ public class DentistUpdateView extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jPanel3MouseClicked
 
-    private void createPatientAccBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPatientAccBtnActionPerformed
-        String fullName = fnametxt.getText().trim();
-        String email = emailtxt.getText().trim();
-        String dob = dobtxt.getText().trim();
-        String nic = nictxt.getText().trim();
-        String contactNo = contactnotxt.getText().trim();
-        String password = new String(pwstxt.getPassword());
-        String confirmPws = new String(confirmpwstxt.getPassword());
-        String address = addresstxt.getText().trim();
+    private void UpdateDentestStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateDentestStatusActionPerformed
 
-        String role = "PATIENT";
+        String docName = DocName.getText();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    String workDate = "";
+    if (Date.getDate() != null) {
+        workDate = dateFormat.format(Date.getDate());
+    } else {
+        JOptionPane.showMessageDialog(this, "Please select a date.");
+        return;
+    }
+    String status = WorkStatus.getSelectedItem().toString();
+    
+    String startTime = STime.getValue().toString() + " " + AmPm1.getSelectedItem().toString();
+    String endTime = ETime.getValue().toString() + " " + AmPm2.getSelectedItem().toString();
+    
+    String url = "jdbc:mysql://localhost:3306/dental_clinic_db";
+    String user = "root";
+    String password = "";
+    
+    String sql = "INSERT INTO Dentist (doctor_name, work_date, work_status, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+    
+    try (Connection conn = DriverManager.getConnection(url, user, password);
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        if (fullName.isEmpty() || email.isEmpty() || dob.isEmpty() || nic.isEmpty() ||
-            contactNo.isEmpty() || password.isEmpty() || address.isEmpty()) {
+        pstmt.setString(1, docName);
+        pstmt.setString(2, workDate);
+        pstmt.setString(3, status);
+        pstmt.setString(4, startTime);
+        pstmt.setString(5, endTime);
 
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Please Enter details!",
-                "Warning",
-                javax.swing.JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!password.equals(confirmPws)) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Passwords not match!",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-
-            Connection con = DBconnect.getConnection();
-
-            String sql = "INSERT INTO patient_login (full_name, email, dob, nic, contact_no, password, address, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, fullName);
-            pst.setString(2, email);
-            pst.setString(3, dob);
-            pst.setString(4, nic);
-            pst.setString(5, contactNo);
-            pst.setString(6, password);
-            pst.setString(7, address);
-            pst.setString(8, role);
-
-            int rowsInserted = pst.executeUpdate();
-
-            if (rowsInserted > 0) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Patient registed!",
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-
-                clearFields();
-            }
-
-        } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Database Error: " + e.getMessage(),
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+        int rowsInserted = pstmt.executeUpdate();
+        if (rowsInserted > 0) {
+            JOptionPane.showMessageDialog(this, "Data inserted successfully");
         }
 
-    }//GEN-LAST:event_createPatientAccBtnActionPerformed
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Database: " + ex.getMessage());
+        ex.printStackTrace();
+    }
+    
+    }//GEN-LAST:event_UpdateDentestStatusActionPerformed
 
     /**
      * @param args the command line arguments
@@ -387,11 +401,14 @@ public class DentistUpdateView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton createPatientAccBtn;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JComboBox<String> AmPm1;
+    private javax.swing.JComboBox<String> AmPm2;
+    private com.toedter.calendar.JDateChooser Date;
+    private javax.swing.JLabel DocName;
+    private javax.swing.JSpinner ETime;
+    private javax.swing.JSpinner STime;
+    private javax.swing.JButton UpdateDentestStatus;
+    private javax.swing.JComboBox<String> WorkStatus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -405,9 +422,8 @@ public class DentistUpdateView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
     // End of variables declaration//GEN-END:variables
 }

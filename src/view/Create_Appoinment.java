@@ -35,12 +35,12 @@ public class Create_Appoinment extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        DentistNme = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox2 = new javax.swing.JComboBox<>();
         createPatientAccBtn = new javax.swing.JButton();
         AppoinmentDatetxt = new com.toedter.calendar.JDateChooser();
+        SelectDentist = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 600));
@@ -61,7 +61,7 @@ public class Create_Appoinment extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel2.setText("Dentist");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 280, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel5.setText("Treatment Type");
@@ -69,15 +69,7 @@ public class Create_Appoinment extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel3.setText("Appoinment Date");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, -1, -1));
-
-        DentistNme.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        DentistNme.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DentistNmeActionPerformed(evt);
-            }
-        });
-        getContentPane().add(DentistNme, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, 360, 40));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel6.setText("Available Time");
@@ -104,14 +96,13 @@ public class Create_Appoinment extends javax.swing.JFrame {
         getContentPane().add(createPatientAccBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 430, -1, 40));
 
         AppoinmentDatetxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        getContentPane().add(AppoinmentDatetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 322, 350, 40));
+        getContentPane().add(AppoinmentDatetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 350, 40));
+
+        SelectDentist.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        getContentPane().add(SelectDentist, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 320, 330, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void DentistNmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DentistNmeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DentistNmeActionPerformed
 
     private void createPatientAccBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPatientAccBtnActionPerformed
         
@@ -154,7 +145,7 @@ public class Create_Appoinment extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser AppoinmentDatetxt;
-    private javax.swing.JTextField DentistNme;
+    private javax.swing.JComboBox<String> SelectDentist;
     private javax.swing.JButton createPatientAccBtn;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
