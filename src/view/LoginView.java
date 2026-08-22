@@ -5,18 +5,26 @@
  */
 package view;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import db.DBconnect;
+
 /**
  *
  * @author ashan
  */
 public class LoginView extends javax.swing.JFrame {
 
-    /**
-     * Creates new form LoginView
-     */
+
+    
     public LoginView() {
         initComponents();
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,7 +45,7 @@ public class LoginView extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        usernametxt = new javax.swing.JTextField();
+        Emailtxt = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         Signupbtn = new javax.swing.JButton();
@@ -96,8 +104,8 @@ public class LoginView extends javax.swing.JFrame {
         jLabel8.setText("Email addess");
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 180, -1, -1));
 
-        usernametxt.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        getContentPane().add(usernametxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 210, 418, 39));
+        Emailtxt.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
+        getContentPane().add(Emailtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 210, 418, 39));
 
         jLabel9.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(102, 102, 102));
@@ -139,59 +147,124 @@ public class LoginView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SignupbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignupbtnActionPerformed
-        PatientSignUp PatientReg = new PatientSignUp();
-        PatientReg.setVisible(true);
-        this.dispose();
+        
     }//GEN-LAST:event_SignupbtnActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
-        String email = usernametxt.getText().trim();
+        String email = Emailtxt.getText().trim();
     String password = new String(pwstxt.getPassword());
-    
+
     if (email.isEmpty() || password.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Please enter Email and Password!", 
-            "Warning", 
-            javax.swing.JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(
+            this,
+            "Please enter your email and password."
+        );
         return;
     }
-    
-    try {
-        java.sql.Connection con = db.DBconnect.getConnection();
 
-        String sql = "SELECT * FROM patient_login WHERE email = ? AND password = ? AND role = 'PATIENT'";
-        java.sql.PreparedStatement pst = con.prepareStatement(sql);
-        pst.setString(1, email);
-        pst.setString(2, password);
+    String url = "jdbc:mysql://localhost:3306/dental_clinic_db";
+    String username = "root";
+    String dbPassword = "";
 
-        java.sql.ResultSet rs = pst.executeQuery();
+    try (Connection con = DriverManager.getConnection(
+            url, username, dbPassword)) {
 
-        if (rs.next()) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Login Successful!", 
-                "Success", 
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        // Check dentist login
+        String dentistQuery =
+                "SELECT name, email FROM dentist_details "
+                + "WHERE email = ? AND password = ?";
 
-            PatientDashboardView patientDashboard = new PatientDashboardView();
-            patientDashboard.setVisible(true);
+        try (PreparedStatement pstDentist =
+                     con.prepareStatement(dentistQuery)) {
 
-            this.dispose();
+            pstDentist.setString(1, email);
+            pstDentist.setString(2, password);
 
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Invalid Email or Password! Karunakara Nivaradi Data Athulath Karanna.", 
-                "Login Failed", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            try (ResultSet rsDentist = pstDentist.executeQuery()) {
+
+                if (rsDentist.next()) {
+                    String dentistName =
+                            rsDentist.getString("name");
+
+                    String dentistEmail =
+                            rsDentist.getString("email");
+
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Dentist login successful!"
+                    );
+
+                    DentistUpdateView dentistDashboard =
+                            new DentistUpdateView(
+                                dentistName,
+                                dentistEmail
+                            );
+
+                    dentistDashboard.setVisible(true);
+                    this.dispose();
+                    return;
+                }
+            }
         }
-        
-        } catch (Exception e) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Database Error: " + e.getMessage(), 
-            "Error", 
-            javax.swing.JOptionPane.ERROR_MESSAGE);
-    
+
+        // Check patient login
+        String patientQuery =
+        "SELECT patient_id, full_name, email "
+        + "FROM patient_login "
+        + "WHERE email = ? AND password = ?";
+
+try (PreparedStatement pstPatient =
+             con.prepareStatement(patientQuery)) {
+
+    pstPatient.setString(1, email);
+    pstPatient.setString(2, password);
+
+    try (ResultSet rsPatient = pstPatient.executeQuery()) {
+
+        if (rsPatient.next()) {
+
+    int patientId =
+            rsPatient.getInt("patient_id");
+
+    String patientName =
+            rsPatient.getString("full_name");
+
+    JOptionPane.showMessageDialog(
+            this,
+            "Patient login successful!"
+    );
+
+    PatientDashboardView dashboard =
+            new PatientDashboardView(
+                    patientId,
+                    patientName
+            );
+
+    dashboard.setVisible(true);
+    this.dispose();
+    return;
+}
     }
-    
+}
+
+        JOptionPane.showMessageDialog(
+            this,
+            "Incorrect email or password!",
+            "Login Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+
+        JOptionPane.showMessageDialog(
+            this,
+            "Database Error: " + e.getMessage(),
+            "Database Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
+
 
     
     }//GEN-LAST:event_signInbtnActionPerformed
@@ -233,6 +306,7 @@ public class LoginView extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Emailtxt;
     private javax.swing.JButton Signupbtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -248,6 +322,5 @@ public class LoginView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField pwstxt;
     private javax.swing.JButton signInbtn;
-    private javax.swing.JTextField usernametxt;
     // End of variables declaration//GEN-END:variables
 }

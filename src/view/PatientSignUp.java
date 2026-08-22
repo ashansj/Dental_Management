@@ -55,6 +55,7 @@ public class PatientSignUp extends javax.swing.JFrame {
         pwstxt = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1000, 800));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 153));
@@ -173,7 +174,6 @@ public class PatientSignUp extends javax.swing.JFrame {
         String confirmPws = new String(confirmpwstxt.getPassword());
         String address = addresstxt.getText().trim();
         
-        String role = "PATIENT";
         
         if (fullName.isEmpty() || email.isEmpty() || dob.isEmpty() || nic.isEmpty() || 
         contactNo.isEmpty() || password.isEmpty() || address.isEmpty()) {
@@ -197,7 +197,7 @@ public class PatientSignUp extends javax.swing.JFrame {
         Connection con = DBconnect.getConnection();
 
         
-        String sql = "INSERT INTO patient_login (full_name, email, dob, nic, contact_no, password, address, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO patient_login (full_name, email, dob, nic, contact_no, password, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
         
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setString(1, fullName);
@@ -207,7 +207,6 @@ public class PatientSignUp extends javax.swing.JFrame {
         pst.setString(5, contactNo);
         pst.setString(6, password);
         pst.setString(7, address);
-        pst.setString(8, role);
 
         int rowsInserted = pst.executeUpdate();
 

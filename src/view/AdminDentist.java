@@ -10,18 +10,60 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import db.DBconnect;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 
 
 
 public class AdminDentist extends javax.swing.JFrame {
 
-    /**
-     * Creates new form AdminDashboard
-     */
+    
+    private final String url = "jdbc:mysql://localhost:3306/dental_clinic_db";
+    private final String user = "root";
+    private final String password = "";
+    
     public AdminDentist() {
         initComponents();
+        loadDentistDetails();
     }
+    
+    public void loadDentistDetails() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); 
+
+        String sql = "SELECT name, contact_no, address, email FROM dentist_details";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String name = rs.getString("name");
+                String contact = rs.getString("contact_no");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+
+                
+                model.addRow(new Object[]{name, contact, address, email});
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Data Load Error: " + ex.getMessage());
+        }
+    }
+    
+    private void clearFields() {
+        DName.setText("");
+        DNo.setText("");
+        Daddress.setText("");
+        DEmail.setText("");
+        DPassword.setText("");
+        ReDPassword.setText("");
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -56,6 +98,14 @@ public class AdminDentist extends javax.swing.JFrame {
         DPassword = new javax.swing.JPasswordField();
         ReDPassword = new javax.swing.JPasswordField();
         jLabel10 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        deleteBtn = new javax.swing.JButton();
+        editBtn = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
+        searchtxt = new javax.swing.JTextField();
+        Searchbtn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -225,6 +275,63 @@ public class AdminDentist extends javax.swing.JFrame {
         jLabel10.setText("Re-enter Password");
         jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 140, -1, -1));
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Name", "Contact No", "Address", "Email"
+            }
+        ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTable1);
+
+        jScrollPane1.setViewportView(jScrollPane2);
+
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 280, 730, 280));
+
+        deleteBtn.setBackground(new java.awt.Color(204, 204, 204));
+        deleteBtn.setText("Delete");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
+        jPanel2.add(deleteBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 570, 150, 40));
+
+        editBtn.setBackground(new java.awt.Color(204, 204, 204));
+        editBtn.setText("Edit Data");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
+        jPanel2.add(editBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 570, 150, 40));
+
+        clearBtn.setText("Clear");
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
+        jPanel2.add(clearBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 240, 100, -1));
+        jPanel2.add(searchtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(289, 240, 380, -1));
+
+        Searchbtn1.setText("Search");
+        Searchbtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Searchbtn1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(Searchbtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 240, 100, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -284,24 +391,213 @@ public class AdminDentist extends javax.swing.JFrame {
         if (rowsInserted > 0) {
             JOptionPane.showMessageDialog(this, "Dentist account created successfully!");
             clearFields();
+            loadDentistDetails();
         }
 
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
+    
 
-private void clearFields() {
-    DName.setText("");
-    DNo.setText("");
-    Daddress.setText("");
-    DEmail.setText("");
-    DPassword.setText("");
-    ReDPassword.setText("");
+
 
     
     
     }//GEN-LAST:event_CreateDAccountBtnActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow != -1) {
+        // Set data to respective text fields based on column index
+        DName.setText(model.getValueAt(selectedRow, 0).toString());
+        DNo.setText(model.getValueAt(selectedRow, 1).toString());
+        Daddress.setText(model.getValueAt(selectedRow, 2).toString());
+        DEmail.setText(model.getValueAt(selectedRow, 3).toString());
+        
+        // Clear password fields for security reasons
+        DPassword.setText("");
+        ReDPassword.setText("");
+    
+}
+
+        
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+      
+    String name = DName.getText().trim();
+    String contactNo = DNo.getText().trim();
+    String address = Daddress.getText().trim();
+    String email = DEmail.getText().trim();
+    String password = new String(DPassword.getPassword());
+    String rePassword = new String(ReDPassword.getPassword());
+
+    // Validate if basic fields are empty
+    if (name.isEmpty() || contactNo.isEmpty() || address.isEmpty() || email.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please select a record from the table to edit and fill all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    String sql;
+    boolean updatePassword = false;
+
+    // Check if user wants to update the password
+    if (!password.isEmpty()) {
+        if (!password.equals(rePassword)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match!", "Password Mismatch", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        // Query to update all fields including password
+        sql = "UPDATE dentist_details SET name=?, contact_no=?, address=?, password=? WHERE email=?";
+        updatePassword = true;
+    } else {
+        // Query to update fields without changing the password
+        sql = "UPDATE dentist_details SET name=?, contact_no=?, address=? WHERE email=?";
+    }
+
+    try (Connection conn = db.DBconnect.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        pstmt.setString(1, name);
+        pstmt.setString(2, contactNo);
+        pstmt.setString(3, address);
+
+        if (updatePassword) {
+            pstmt.setString(4, password);
+            pstmt.setString(5, email);
+        } else {
+            pstmt.setString(4, email);
+        }
+
+        int rowsUpdated = pstmt.executeUpdate();
+        if (rowsUpdated > 0) {
+            JOptionPane.showMessageDialog(this, "Dentist account updated successfully!");
+            clearFields();
+            loadDentistDetails();
+        } else {
+            JOptionPane.showMessageDialog(this, "Update failed. Email address cannot be changed as it is used for identification.", "Update Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    }//GEN-LAST:event_editBtnActionPerformed
+
+    private void Searchbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Searchbtn1ActionPerformed
+                                   
+    String keyword = searchtxt.getText().trim();
+
+    // Check if the search text field is empty
+    if (keyword.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please enter a keyword to search.", "Input Required", JOptionPane.WARNING_MESSAGE);
+        loadDentistDetails(); // Load all data if search is empty
+        return;
+    }
+
+    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+    
+    // Clear the table before displaying search results
+    model.setRowCount(0); 
+
+    // SQL query to search across all four columns using LIKE operator
+    String sql = "SELECT name, contact_no, address, email FROM dentist_details WHERE name LIKE ? OR contact_no LIKE ? OR address LIKE ? OR email LIKE ?";
+
+    try (Connection conn = db.DBconnect.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        // Add wildcards (%) to search for partial matches
+        String searchPattern = "%" + keyword + "%";
+        
+        pstmt.setString(1, searchPattern);
+        pstmt.setString(2, searchPattern);
+        pstmt.setString(3, searchPattern);
+        pstmt.setString(4, searchPattern);
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            boolean hasResults = false;
+            
+            // Iterate through the results and add to the table
+            while (rs.next()) {
+                hasResults = true;
+                String name = rs.getString("name");
+                String contact = rs.getString("contact_no");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                
+                model.addRow(new Object[]{name, contact, address, email});
+            }
+            
+            // Show a message if no matching records are found
+            if (!hasResults) {
+                JOptionPane.showMessageDialog(this, "No matching records found.", "Search Result", JOptionPane.INFORMATION_MESSAGE);
+                loadDentistDetails(); // Reload original data
+                searchtxt.setText(""); // Clear the text field
+            }
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Search Error: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    }//GEN-LAST:event_Searchbtn1ActionPerformed
+
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+
+    searchtxt.setText("");
+    
+    // Reload all original data into the table
+    loadDentistDetails();
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+
+    // Check if a row is actually selected
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a record from the table to delete.", "Selection Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Get the table model
+    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+    
+    // Get the email of the selected row (Column index 3 represents the Email column)
+    String email = model.getValueAt(selectedRow, 3).toString();
+
+    // Show a confirmation dialog before deleting
+    int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this dentist account?", "Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+    // Proceed with deletion only if the user clicks "Yes"
+    if (confirm == JOptionPane.YES_OPTION) {
+        String sql = "DELETE FROM dentist_details WHERE email = ?";
+
+        try (Connection conn = db.DBconnect.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set the email parameter for the query
+            pstmt.setString(1, email);
+
+            // Execute the delete operation
+            int rowsDeleted = pstmt.executeUpdate();
+            
+            if (rowsDeleted > 0) {
+                JOptionPane.showMessageDialog(this, "Dentist account deleted successfully!");
+                
+                clearFields(); // Clear the text fields
+                loadDentistDetails(); // Refresh the table to show updated data
+            } else {
+                JOptionPane.showMessageDialog(this, "Deletion failed. Record may not exist.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }//GEN-LAST:event_deleteBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -349,6 +645,10 @@ private void clearFields() {
     private javax.swing.JPasswordField DPassword;
     private javax.swing.JTextField Daddress;
     private javax.swing.JPasswordField ReDPassword;
+    private javax.swing.JButton Searchbtn1;
+    private javax.swing.JButton clearBtn;
+    private javax.swing.JButton deleteBtn;
+    private javax.swing.JButton editBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -366,5 +666,11 @@ private void clearFields() {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField searchtxt;
     // End of variables declaration//GEN-END:variables
+
+    
 }

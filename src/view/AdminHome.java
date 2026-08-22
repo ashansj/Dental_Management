@@ -5,10 +5,16 @@
  */
 package view;
 
-/**
- *
- * @author ashan
- */
+import db.DBconnect;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+
+
 public class AdminHome extends javax.swing.JFrame {
 
     /**
@@ -16,7 +22,66 @@ public class AdminHome extends javax.swing.JFrame {
      */
     public AdminHome() {
         initComponents();
+        loadAllAppointments();
     }
+    
+    private void loadAllAppointments() {
+
+    DefaultTableModel tableModel =
+            (DefaultTableModel) jTable1.getModel();
+
+    
+    tableModel.setRowCount(0);
+
+    String sql =
+            "SELECT p.full_name AS patient_name, "
+            + "a.dentist_name, "
+            + "a.appointment_time, "
+            + "a.treatment_type "
+            + "FROM appointments a "
+            + "INNER JOIN patient_login p "
+            + "ON a.patient_id = p.patient_id "
+            + "ORDER BY a.appointment_date ASC, "
+            + "a.appointment_time ASC";
+
+    try (Connection con = DBconnect.getConnection()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Database connection failed."
+            );
+            return;
+        }
+
+        try (PreparedStatement pst =
+                con.prepareStatement(sql);
+
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+
+                Object[] appointmentRow = {
+                    rs.getString("patient_name"),
+                    rs.getString("dentist_name"),
+                    rs.getString("appointment_time"),
+                    rs.getString("treatment_type")
+                };
+
+                tableModel.addRow(appointmentRow);
+            }
+        }
+
+    } catch (SQLException e) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Database Error: " + e.getMessage()
+        );
+
+        e.printStackTrace();
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,6 +102,15 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -147,6 +221,92 @@ public class AdminHome extends javax.swing.JFrame {
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 776));
 
+        jPanel7.setBackground(new java.awt.Color(0, 102, 153));
+
+        jLabel4.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Total Appointments");
+
+        jLabel6.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("10");
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel4))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(94, 94, 94)
+                        .addComponent(jLabel6)))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, 220, 120));
+
+        jPanel8.setBackground(new java.awt.Color(0, 102, 153));
+
+        jLabel5.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Available Dentist schedules");
+
+        jLabel7.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("10");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addContainerGap(35, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 30, -1, -1));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Patient", "Dentist", "Time", "Treatment Type"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
+        jScrollPane1.setViewportView(jScrollPane2);
+
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 210, 710, 310));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -224,11 +384,20 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
