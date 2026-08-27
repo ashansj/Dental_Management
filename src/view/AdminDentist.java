@@ -106,6 +106,14 @@ public class AdminDentist extends javax.swing.JFrame {
         clearBtn = new javax.swing.JButton();
         searchtxt = new javax.swing.JTextField();
         Searchbtn1 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -222,8 +230,8 @@ public class AdminDentist extends javax.swing.JFrame {
         jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 140, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Poppins", 1, 13)); // NOI18N
-        jLabel8.setText("Create Dentist Account");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 20, -1, -1));
+        jLabel8.setText("Dentist Schedule Manage");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 500, -1, -1));
 
         CreateDAccountBtn.setBackground(new java.awt.Color(0, 102, 153));
         CreateDAccountBtn.setForeground(new java.awt.Color(255, 255, 255));
@@ -295,7 +303,7 @@ public class AdminDentist extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(jScrollPane2);
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 280, 730, 280));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 280, 730, 130));
 
         deleteBtn.setBackground(new java.awt.Color(204, 204, 204));
         deleteBtn.setText("Delete");
@@ -304,7 +312,7 @@ public class AdminDentist extends javax.swing.JFrame {
                 deleteBtnActionPerformed(evt);
             }
         });
-        jPanel2.add(deleteBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 570, 150, 40));
+        jPanel2.add(deleteBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 420, 150, 40));
 
         editBtn.setBackground(new java.awt.Color(204, 204, 204));
         editBtn.setText("Edit Data");
@@ -313,7 +321,7 @@ public class AdminDentist extends javax.swing.JFrame {
                 editBtnActionPerformed(evt);
             }
         });
-        jPanel2.add(editBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 570, 150, 40));
+        jPanel2.add(editBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 420, 150, 40));
 
         clearBtn.setText("Clear");
         clearBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -331,6 +339,62 @@ public class AdminDentist extends javax.swing.JFrame {
             }
         });
         jPanel2.add(Searchbtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 240, 100, -1));
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Date", "Dentist", "Start Time", "End Time"
+            }
+        ));
+        jScrollPane4.setViewportView(jTable2);
+
+        jScrollPane3.setViewportView(jScrollPane4);
+
+        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 540, 720, 150));
+
+        jPanel8.setBackground(new java.awt.Color(0, 102, 153));
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 770, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 10, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 480, -1, -1));
+
+        jLabel11.setFont(new java.awt.Font("Poppins", 1, 13)); // NOI18N
+        jLabel11.setText("Create Dentist Account");
+        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 20, -1, -1));
+
+        jLabel12.setFont(new java.awt.Font("Poppins", 1, 13)); // NOI18N
+        jLabel12.setText("Dentist Data manage");
+        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 200, -1, -1));
+
+        jButton1.setText("Approve");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 700, 100, 40));
+
+        jButton2.setText("Remove");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 700, 100, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -554,50 +618,58 @@ public class AdminDentist extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
+        String name = DName.getText().trim();
+        String contactNo = DNo.getText().trim();
+        String address = Daddress.getText().trim();
+        String email = DEmail.getText().trim();
 
-    // Check if a row is actually selected
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Please select a record from the table to delete.", "Selection Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        if (name.isEmpty() || contactNo.isEmpty() || address.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a record from the table to approve.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    // Get the table model
-    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
-    
-    // Get the email of the selected row (Column index 3 represents the Email column)
-    String email = model.getValueAt(selectedRow, 3).toString();
+        try (Connection conn = DBconnect.getConnection()) {
 
-    // Show a confirmation dialog before deleting
-    int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this dentist account?", "Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            // 1. Check if the dentist is already approved
+            String checkSql = "SELECT COUNT(*) FROM approved_dentists WHERE email = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, email);
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        JOptionPane.showMessageDialog(this, "This dentist has already been approved!", "Duplicate Entry", JOptionPane.WARNING_MESSAGE);
+                        return; // Stop execution if already exists
+                    }
+                }
+            }
 
-    // Proceed with deletion only if the user clicks "Yes"
-    if (confirm == JOptionPane.YES_OPTION) {
-        String sql = "DELETE FROM dentist_details WHERE email = ?";
+            // 2. If not exists, proceed with the insertion
+            String insertSql = "INSERT INTO approved_dentists (name, contact_no, address, email) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                insertStmt.setString(1, name);
+                insertStmt.setString(2, contactNo);
+                insertStmt.setString(3, address);
+                insertStmt.setString(4, email);
 
-        try (Connection conn = db.DBconnect.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // Set the email parameter for the query
-            pstmt.setString(1, email);
-
-            // Execute the delete operation
-            int rowsDeleted = pstmt.executeUpdate();
-            
-            if (rowsDeleted > 0) {
-                JOptionPane.showMessageDialog(this, "Dentist account deleted successfully!");
-                
-                clearFields(); // Clear the text fields
-                loadDentistDetails(); // Refresh the table to show updated data
-            } else {
-                JOptionPane.showMessageDialog(this, "Deletion failed. Record may not exist.", "Error", JOptionPane.ERROR_MESSAGE);
+                int rowsInserted = insertStmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    JOptionPane.showMessageDialog(this, "Dentist approved and saved successfully!");
+                    clearFields();
+                }
             }
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
+
     }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -649,8 +721,12 @@ public class AdminDentist extends javax.swing.JFrame {
     private javax.swing.JButton clearBtn;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -666,9 +742,13 @@ public class AdminDentist extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextField searchtxt;
     // End of variables declaration//GEN-END:variables
 

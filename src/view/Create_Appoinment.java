@@ -31,7 +31,7 @@ public Create_Appoinment(int patientId, String patientName) {
     this.loggedInPatientId = patientId;
     this.loggedInPatientName = patientName;
 
-    jLabel4.setText("Patient: " + patientName);
+  
 
     initializeAppointmentForm();
 }
@@ -253,7 +253,12 @@ public Create_Appoinment(int patientId, String patientName) {
         createappointmentBtn = new javax.swing.JButton();
         AppoinmentDatetxt = new com.toedter.calendar.JDateChooser();
         SelectDentist = new javax.swing.JComboBox<>();
+        PName = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        PAge = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        PNumber = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 600));
@@ -274,23 +279,23 @@ public Create_Appoinment(int patientId, String patientName) {
 
         jLabel2.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel2.setText("Dentist");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 330, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 510, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel5.setText("Treatment Type");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 210, -1, -1));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 390, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
-        jLabel3.setText("Appoinment Date");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, -1, -1));
+        jLabel3.setText("Patient Name");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
         jLabel6.setText("Available Time");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 320, -1, -1));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, -1, -1));
 
         dentistTimetxt.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         dentistTimetxt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Time" }));
-        getContentPane().add(dentistTimetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 370, 360, 40));
+        getContentPane().add(dentistTimetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 550, 360, 40));
 
         jComboBox2.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dental Cleanings & Scaling", "Tooth Extractions", "Dental Fillings", "Root Canal Treatment" }));
@@ -299,7 +304,7 @@ public Create_Appoinment(int patientId, String patientName) {
                 jComboBox2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 260, 360, 40));
+        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 440, 360, 40));
 
         createappointmentBtn.setBackground(new java.awt.Color(0, 102, 102));
         createappointmentBtn.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
@@ -311,124 +316,123 @@ public Create_Appoinment(int patientId, String patientName) {
                 createappointmentBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(createappointmentBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 480, -1, 40));
+        getContentPane().add(createappointmentBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 660, -1, 40));
 
         AppoinmentDatetxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        getContentPane().add(AppoinmentDatetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 260, 350, 40));
+        getContentPane().add(AppoinmentDatetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 440, 350, 40));
 
         SelectDentist.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", " ", " ", " ", " ", " ", " ", " " }));
-        getContentPane().add(SelectDentist, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 370, 330, 40));
+        getContentPane().add(SelectDentist, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 550, 330, 40));
+        getContentPane().add(PName, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 240, 320, 40));
 
-        jLabel4.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
-        jLabel4.setText("jLabel4");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 160, -1, -1));
+        jLabel4.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
+        jLabel4.setText("Appoinment Date");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, -1, -1));
+        getContentPane().add(PAge, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 240, 350, 40));
+
+        jLabel7.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
+        jLabel7.setText("Patient Age");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 200, -1, -1));
+        getContentPane().add(PNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 340, 320, 40));
+
+        jLabel8.setFont(new java.awt.Font("Poppins", 1, 24)); // NOI18N
+        jLabel8.setText("Mobile No");
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void createappointmentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createappointmentBtnActionPerformed
         
-        if (loggedInPatientId <= 0) {
-    JOptionPane.showMessageDialog(
-            this,
-            "Patient ID is not available."
-    );
-    return;
-}
-
-java.util.Date date = AppoinmentDatetxt.getDate();
-
-if (date == null) {
-    JOptionPane.showMessageDialog(
-            this,
-            "Please select a date."
-    );
-    return;
-}
-
-String dentist =
-        String.valueOf(SelectDentist.getSelectedItem());
-
-String time =
-        String.valueOf(dentistTimetxt.getSelectedItem());
-
-String treatment =
-        String.valueOf(jComboBox2.getSelectedItem());
-
-if (dentist.equals("Select Dentist")
-        || dentist.equals("null")) {
-
-    JOptionPane.showMessageDialog(
-            this,
-            "Please select a dentist."
-    );
-    return;
-}
-
-if (time.equals("Select Time")
-        || time.equals("Time")
-        || time.equals("null")) {
-
-    JOptionPane.showMessageDialog(
-            this,
-            "Please select a time."
-    );
-    return;
-}
-
-String sql =
-        "INSERT INTO appointments "
-        + "(patient_id, dentist_name, appointment_date, "
-        + "appointment_time, treatment_type) "
-        + "VALUES (?, ?, ?, ?, ?)";
-
-try (Connection con = DBconnect.getConnection()) {
-
-    if (con == null) {
-        JOptionPane.showMessageDialog(
-                this,
-                "Database connection failed."
-        );
-        return;
-    }
-
-    try (PreparedStatement pst =
-            con.prepareStatement(sql)) {
-
-        pst.setInt(1, loggedInPatientId);
-        pst.setString(2, dentist);
-
-        pst.setDate(
-                3,
-                new java.sql.Date(date.getTime())
-        );
-
-        pst.setString(4, time);
-        pst.setString(5, treatment);
-
-        int result = pst.executeUpdate();
-
-        if (result > 0) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Appointment created successfully!"
-            );
+        String patientName = PName.getText().trim();
+        String patientAgeStr = PAge.getText().trim();
+        String mobileNumber = PNumber.getText().trim();
+        java.util.Date date = AppoinmentDatetxt.getDate();
+        
+        if (patientName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter patient name.");
+            PName.requestFocus();
+            return;
         }
-    }
 
-} catch (SQLException e) {
-    JOptionPane.showMessageDialog(
-            this,
-            "Database Error: " + e.getMessage()
-    );
+        if (patientAgeStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter patient age.");
+            PAge.requestFocus();
+            return;
+        }
 
-    e.printStackTrace();
-}
+        int patientAge;
+        try {
+            patientAge = Integer.parseInt(patientAgeStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid numeric age.");
+            PAge.requestFocus();
+            return;
+        }
+
+        if (mobileNumber.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter mobile number.");
+            PNumber.requestFocus();
+            return;
+        }
+
+        if (date == null) {
+            JOptionPane.showMessageDialog(this, "Please select an appointment date.");
+            return;
+        }
+
+        String dentist = String.valueOf(SelectDentist.getSelectedItem());
+        String time = String.valueOf(dentistTimetxt.getSelectedItem());
+        String treatment = String.valueOf(jComboBox2.getSelectedItem());
+
+        if (dentist.equals("Select Dentist") || dentist.equals("No dentists available") || dentist.equals("null")) {
+            JOptionPane.showMessageDialog(this, "Please select a dentist.");
+            return;
+        }
+
+        if (time.equals("Select Time") || time.equals("No time available") || time.equals("null")) {
+            JOptionPane.showMessageDialog(this, "Please select a time.");
+            return;
+        }
+
+        
+        String sql = "INSERT INTO appointments "
+                + "(PName, PAge, PNumber, dentist_name, appointment_date, appointment_time, treatment_type) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = DBconnect.getConnection()) {
+            if (con == null) {
+                JOptionPane.showMessageDialog(this, "Database connection failed.");
+                return;
+            }
+
+            try (PreparedStatement pst = con.prepareStatement(sql)) {
+                pst.setString(1, patientName);
+                pst.setInt(2, patientAge);
+                pst.setString(3, mobileNumber);
+                pst.setString(4, dentist);
+                pst.setDate(5, new java.sql.Date(date.getTime()));
+                pst.setString(6, time);
+                pst.setString(7, treatment);
+
+                int result = pst.executeUpdate();
+                if (result > 0) {
+                    JOptionPane.showMessageDialog(this, "Appointment created successfully!");
+                    
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    
         
     }//GEN-LAST:event_createappointmentBtnActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        // TODO add your handling code here:
+        String dentist = String.valueOf(SelectDentist.getSelectedItem());
+        String time = String.valueOf(dentistTimetxt.getSelectedItem());
+        String treatment = String.valueOf(jComboBox2.getSelectedItem());
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     /**
@@ -468,6 +472,9 @@ try (Connection con = DBconnect.getConnection()) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser AppoinmentDatetxt;
+    private javax.swing.JTextField PAge;
+    private javax.swing.JTextField PName;
+    private javax.swing.JTextField PNumber;
     private javax.swing.JComboBox<String> SelectDentist;
     private javax.swing.JButton createappointmentBtn;
     private javax.swing.JComboBox<String> dentistTimetxt;
@@ -481,6 +488,8 @@ try (Connection con = DBconnect.getConnection()) {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
