@@ -151,7 +151,9 @@ public class LoginView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SignupbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignupbtnActionPerformed
-        
+        PatientSignUp PsignUp = new PatientSignUp();
+        PsignUp.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_SignupbtnActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed

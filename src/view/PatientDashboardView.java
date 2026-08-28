@@ -5,6 +5,9 @@
  */
 package view;
 
+import db.DBconnect;
+import java.sql.Connection;
+
 /**
  *
  * @author ashan
@@ -125,6 +128,11 @@ public class PatientDashboardView extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTable1);
 
         jDateChooser1.setFont(new java.awt.Font("Poppins", 0, 18)); // NOI18N
+        jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser1PropertyChange(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
         jLabel2.setText("Select Date");
@@ -136,14 +144,10 @@ public class PatientDashboardView extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(96, 96, 96)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(134, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,6 +165,40 @@ public class PatientDashboardView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
+        if ("date".equals(evt.getPropertyName())) {
+        try {
+            java.util.Date selectedDate = jDateChooser1.getDate();
+            if (selectedDate != null) {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("YYYY-MM-dd");
+                String dateStr = sdf.format(selectedDate);
+                
+                javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+                dtm.setRowCount(0);
+                
+                Connection con = DBconnect.getConnection();
+                java.sql.PreparedStatement pst = con.prepareStatement("SELECT doctor_name, start_time, end_time FROM approved_dentist_schedule WHERE work_date = ?");
+                pst.setString(1, dateStr);
+                java.sql.ResultSet rs = pst.executeQuery();
+                
+                while (rs.next()) {
+                    String doctorName = rs.getString("doctor_name");
+                    String startTime = rs.getString("start_time");
+                    String endTime = rs.getString("end_time");
+                    
+                    String availableTime = startTime + " - " + endTime;
+                    
+                    Object[] row = {doctorName, availableTime};
+                    dtm.addRow(row);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
+    }//GEN-LAST:event_jDateChooser1PropertyChange
 
     /**
      * @param args the command line arguments

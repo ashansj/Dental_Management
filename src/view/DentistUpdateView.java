@@ -63,6 +63,8 @@ public class DentistUpdateView extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         Date = new com.toedter.calendar.JDateChooser();
@@ -146,7 +148,7 @@ public class DentistUpdateView extends javax.swing.JFrame {
         );
 
         jPanel2.add(jPanel7);
-        jPanel7.setBounds(30, 230, 260, 50);
+        jPanel7.setBounds(30, 610, 260, 50);
 
         jPanel8.setBackground(new java.awt.Color(0, 146, 219));
 
@@ -172,7 +174,38 @@ public class DentistUpdateView extends javax.swing.JFrame {
         );
 
         jPanel2.add(jPanel8);
-        jPanel8.setBounds(30, 300, 260, 50);
+        jPanel8.setBounds(30, 680, 260, 50);
+
+        jPanel6.setBackground(new java.awt.Color(0, 146, 219));
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel6MouseClicked(evt);
+            }
+        });
+
+        jLabel11.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("Patient Details");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel11)
+                .addContainerGap(116, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel11)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(jPanel6);
+        jPanel6.setBounds(30, 230, 260, 54);
 
         jPanel4.setBackground(new java.awt.Color(153, 204, 255));
 
@@ -422,6 +455,10 @@ public class DentistUpdateView extends javax.swing.JFrame {
     
     }//GEN-LAST:event_UpdateDentestStatusActionPerformed
 
+    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel6MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -469,6 +506,7 @@ public class DentistUpdateView extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> WorkStatus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -482,6 +520,7 @@ public class DentistUpdateView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;

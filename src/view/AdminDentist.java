@@ -14,10 +14,37 @@ import javax.swing.table.DefaultTableModel;
 import db.DBconnect;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.Statement;
+
 
 
 
 public class AdminDentist extends javax.swing.JFrame {
+    
+    
+    public void loadDentistSchedule() {
+    try {
+        DefaultTableModel dtm = (DefaultTableModel) jtable2.getModel();
+        dtm.setRowCount(0); // Clear existing rows
+        
+        Connection con = DBconnect.getConnection();
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM dentist");
+        
+        while (rs.next()) {
+            Object[] row = {
+                rs.getString("work_date"),
+                rs.getString("doctor_name"),
+                rs.getString("start_time"),
+                rs.getString("end_time")
+            };
+            dtm.addRow(row);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error loading data: " + e.getMessage());
+    }
+}
 
     
     private final String url = "jdbc:mysql://localhost:3306/dental_clinic_db";
@@ -27,6 +54,7 @@ public class AdminDentist extends javax.swing.JFrame {
     public AdminDentist() {
         initComponents();
         loadDentistDetails();
+        loadDentistSchedule();
     }
     
     public void loadDentistDetails() {
@@ -108,7 +136,7 @@ public class AdminDentist extends javax.swing.JFrame {
         Searchbtn1 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jtable2 = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -340,7 +368,7 @@ public class AdminDentist extends javax.swing.JFrame {
         });
         jPanel2.add(Searchbtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 240, 100, -1));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jtable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -351,7 +379,7 @@ public class AdminDentist extends javax.swing.JFrame {
                 "Date", "Dentist", "Start Time", "End Time"
             }
         ));
-        jScrollPane4.setViewportView(jTable2);
+        jScrollPane4.setViewportView(jtable2);
 
         jScrollPane3.setViewportView(jScrollPane4);
 
@@ -664,11 +692,69 @@ public class AdminDentist extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jtable2.getSelectedRow();
+    
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a row to approve.");
+        return;
+    }
+    
+    try {
+        DefaultTableModel dtm = (DefaultTableModel) jtable2.getModel();
+        String workDate = dtm.getValueAt(selectedRow, 0).toString();
+        String doctorName = dtm.getValueAt(selectedRow, 1).toString();
+        String startTime = dtm.getValueAt(selectedRow, 2).toString();
+        String endTime = dtm.getValueAt(selectedRow, 3).toString();
+        
+        Connection con = DBconnect.getConnection();
+        
+        // 1. Insert data into approved_dentist_schedule table
+        java.sql.PreparedStatement pst = con.prepareStatement("INSERT INTO approved_dentist_schedule (work_date, doctor_name, start_time, end_time) VALUES (?, ?, ?, ?)");
+        pst.setString(1, workDate);
+        pst.setString(2, doctorName);
+        pst.setString(3, startTime);
+        pst.setString(4, endTime);
+        pst.executeUpdate();
+        
+        // 2. Delete data from the original dentist table so it disappears from jtable2
+        Statement st = con.createStatement();
+        st.executeUpdate("DELETE FROM dentist WHERE doctor_name='" + doctorName + "' AND work_date='" + workDate + "' AND start_time='" + startTime + "'");
+        
+        JOptionPane.showMessageDialog(this, "Schedule approved successfully.");
+        
+        // 3. Refresh jtable2 to reflect the changes
+        loadDentistSchedule();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jtable2.getSelectedRow();
+    
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a row to remove.");
+        return;
+    }
+    
+    try {
+        DefaultTableModel dtm = (DefaultTableModel) jtable2.getModel();
+        String doctorName = dtm.getValueAt(selectedRow, 1).toString();
+        String workDate = dtm.getValueAt(selectedRow, 0).toString();
+        
+        Connection con = DBconnect.getConnection();
+        Statement st = con.createStatement();
+        st.executeUpdate("DELETE FROM dentist WHERE doctor_name='" + doctorName + "' AND work_date='" + workDate + "'");
+        
+        JOptionPane.showMessageDialog(this, "Record removed successfully.");
+        loadDentistSchedule(); // Refresh table
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -748,7 +834,7 @@ public class AdminDentist extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jtable2;
     private javax.swing.JTextField searchtxt;
     // End of variables declaration//GEN-END:variables
 
