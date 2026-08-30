@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import db.DBconnect;
+import Model.DBconnect;
 
 
 
@@ -151,9 +151,7 @@ public class LoginView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SignupbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignupbtnActionPerformed
-        PatientSignUp PsignUp = new PatientSignUp();
-        PsignUp.setVisible(true);
-        this.dispose();
+        
     }//GEN-LAST:event_SignupbtnActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
@@ -198,8 +196,12 @@ public class LoginView extends javax.swing.JFrame {
             // If dentist credentials are valid
             JOptionPane.showMessageDialog(this, "Dentist Login Successful!");
             
-            // Open DentistUpdateView and close current login window
-            new DentistUpdateView().setVisible(true);
+            
+            String doctorNameFromDB = rsDentist.getString("name");
+            
+            
+            DentistUpdateView updateView = new DentistUpdateView(doctorNameFromDB);
+            updateView.setVisible(true);
             this.dispose();
             return;
         }

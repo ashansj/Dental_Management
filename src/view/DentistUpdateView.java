@@ -5,6 +5,7 @@
  */
 package view;
 
+import Model.DBconnect;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,6 +21,47 @@ import javax.swing.table.DefaultTableModel;
  */
 public class DentistUpdateView extends javax.swing.JFrame {
     
+    
+    private void loadTableData() {
+    try {
+        Connection con = DBconnect.getConnection();
+        
+        String doctorFullName = DocName.getText();
+        
+
+        String query = "SELECT work_date, start_time, end_time, work_status FROM dentist WHERE doctor_name = ? " +
+                       "UNION " +
+                       "SELECT work_date, start_time, end_time, work_status FROM approved_dentist_schedule WHERE doctor_name = ?";
+                       
+        PreparedStatement pst = con.prepareStatement(query);
+        pst.setString(1, doctorFullName);
+        pst.setString(2, doctorFullName); // 
+        ResultSet rs = pst.executeQuery();
+        
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); 
+        
+        while (rs.next()) {
+            String date = rs.getString("work_date");
+            String startTime = rs.getString("start_time");
+            String endTime = rs.getString("end_time");
+            String status = rs.getString("work_status");
+            
+            
+            if (status == null || status.isEmpty()) {
+                status = "Approved"; 
+            }
+            
+            model.addRow(new Object[]{date, startTime, endTime, status});
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+}
+    
+    
+    
 
       
 
@@ -29,19 +71,20 @@ public class DentistUpdateView extends javax.swing.JFrame {
         initComponents();
     }
 
-    public DentistUpdateView(String dentistName) {
-        initComponents();
-        DocName.setText("Dr. " + dentistName);
-    }
+public DentistUpdateView(String dentistName) {
+    initComponents();
+    DocName.setText(dentistName);
+    loadTableData();
+}
 
-    public DentistUpdateView(
-            String dentistName,
-            String dentistEmail
-    ) {
-        initComponents();
 
+
+
+    public DentistUpdateView( String dentistName,String dentistEmail) {
+        initComponents();
         this.dentistEmail = dentistEmail;
         DocName.setText("Dr. " + dentistName);
+        loadTableData();
     }
         
 
@@ -176,7 +219,7 @@ public class DentistUpdateView extends javax.swing.JFrame {
         jPanel2.add(jPanel8);
         jPanel8.setBounds(30, 680, 260, 50);
 
-        jPanel6.setBackground(new java.awt.Color(0, 146, 219));
+        jPanel6.setBackground(new java.awt.Color(0, 123, 185));
         jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel6MouseClicked(evt);
@@ -293,13 +336,13 @@ public class DentistUpdateView extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Date", "Status", "Start Time", "End time", "Email"
+                "Date", "Start Time", "End time", "Status"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -446,6 +489,7 @@ public class DentistUpdateView extends javax.swing.JFrame {
         int rowsInserted = pstmt.executeUpdate();
         if (rowsInserted > 0) {
             JOptionPane.showMessageDialog(this, "Data inserted successfully");
+            loadTableData();
         }
 
     } catch (SQLException ex) {
@@ -456,7 +500,14 @@ public class DentistUpdateView extends javax.swing.JFrame {
     }//GEN-LAST:event_UpdateDentestStatusActionPerformed
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
-        // TODO add your handling code here:
+        String currentDocName = DocName.getText();
+    
+    
+        prescription Pdetails = new prescription(currentDocName);
+        Pdetails.setVisible(true);
+        this.dispose();
+
+        
     }//GEN-LAST:event_jPanel6MouseClicked
 
     /**

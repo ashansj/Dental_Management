@@ -5,12 +5,26 @@
  */
 package view;
 
-import db.DBconnect;
+import Model.DBconnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import controller.AppointmentController;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
     
 public class Create_Appoinment extends javax.swing.JFrame {
 
@@ -61,80 +75,73 @@ public Create_Appoinment(int patientId, String patientName) {
     private void loadDentistsByDate() {
 
     if (updatingComboBoxes) {
-        return;
-    }
-
-    updatingComboBoxes = true;
-
-    try {
-        SelectDentist.removeAllItems();
-        SelectDentist.addItem("Select Dentist");
-        SelectDentist.setEnabled(false);
-
-        dentistTimetxt.removeAllItems();
-        dentistTimetxt.addItem("Select Time");
-        dentistTimetxt.setEnabled(false);
-
-        
-        if (AppoinmentDatetxt.getDate() == null) {
             return;
         }
 
-        java.sql.Date selectedDate = new java.sql.Date(
-                AppoinmentDatetxt.getDate().getTime()
-        );
+        updatingComboBoxes = true;
 
-        String sql =
-                "SELECT DISTINCT doctor_name "
-                + "FROM dentist "
-                + "WHERE work_date = ? "
-                + "AND LOWER(TRIM(work_status)) = 'available' "
-                + "AND start_time IS NOT NULL "
-                + "AND end_time IS NOT NULL "
-                + "ORDER BY doctor_name";
+        try {
+            SelectDentist.removeAllItems();
+            SelectDentist.addItem("Select Dentist");
+            SelectDentist.setEnabled(false);
 
-        try (Connection con = DBconnect.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+            dentistTimetxt.removeAllItems();
+            dentistTimetxt.addItem("Select Time");
+            dentistTimetxt.setEnabled(false);
 
-            pst.setDate(1, selectedDate);
+            if (AppoinmentDatetxt.getDate() == null) {
+                return;
+            }
 
-            try (ResultSet rs = pst.executeQuery()) {
+            java.sql.Date selectedDate = new java.sql.Date(
+                    AppoinmentDatetxt.getDate().getTime()
+            );
 
-                boolean dentistFound = false;
 
-                while (rs.next()) {
-                    SelectDentist.addItem(
-                            rs.getString("doctor_name")
-                    );
+            String sql =
+                    "SELECT DISTINCT doctor_name "
+                    + "FROM approved_dentist_schedule "
+                    + "WHERE work_date = ? "
+                    + "AND start_time IS NOT NULL "
+                    + "AND end_time IS NOT NULL "
+                    + "ORDER BY doctor_name";
 
-                    dentistFound = true;
-                }
+            try (Connection con = DBconnect.getConnection();
+                 PreparedStatement pst = con.prepareStatement(sql)) {
 
-                if (dentistFound) {
-                    SelectDentist.setEnabled(true);
-                } else {
-                    SelectDentist.removeAllItems();
-                    SelectDentist.addItem(
-                            "No dentists available"
-                    );
+                pst.setDate(1, selectedDate);
+
+                try (ResultSet rs = pst.executeQuery()) {
+
+                    boolean dentistFound = false;
+
+                    while (rs.next()) {
+                        SelectDentist.addItem(
+                                rs.getString("doctor_name")
+                        );
+                        dentistFound = true;
+                    }
+
+                    if (dentistFound) {
+                        SelectDentist.setEnabled(true);
+                    } else {
+                        SelectDentist.removeAllItems();
+                        SelectDentist.addItem("No dentists available");
+                    }
                 }
             }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Dentists load failed.\n" + ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } finally {
+            updatingComboBoxes = false;
         }
-
-    } catch (SQLException ex) {
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Dentists load failed.\n"
-                        + ex.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE
-        );
-
-    } finally {
-        updatingComboBoxes = false;
     }
-}
     
     private void loadAvailableTimes() {
 
@@ -170,59 +177,27 @@ public Create_Appoinment(int patientId, String patientName) {
                 AppoinmentDatetxt.getDate().getTime()
         );
 
-        String sql =
-                "SELECT start_time, end_time "
-                + "FROM dentist "
-                + "WHERE work_date = ? "
-                + "AND doctor_name = ? "
-                + "AND LOWER(TRIM(work_status)) = 'available' "
-                + "ORDER BY start_time";
 
-        try (Connection con = DBconnect.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+        controller.AppointmentController appointmentController = new controller.AppointmentController();
+        java.util.List<String> timeList = appointmentController.getAvailableTimes(selectedDate, selectedDentist);
 
-            pst.setDate(1, selectedDate);
-            pst.setString(2, selectedDentist);
-
-            try (ResultSet rs = pst.executeQuery()) {
-
-                boolean timeFound = false;
-
-                while (rs.next()) {
-                    String startTime =
-                            rs.getString("start_time");
-
-                    String endTime =
-                            rs.getString("end_time");
-
-                    dentistTimetxt.addItem(
-                            startTime + " - " + endTime
-                    );
-
-                    timeFound = true;
-                }
-
-                if (timeFound) {
-                    dentistTimetxt.setEnabled(true);
-                } else {
-                    dentistTimetxt.removeAllItems();
-                    dentistTimetxt.addItem(
-                            "No time available"
-                    );
-                }
+        if (!timeList.isEmpty()) {
+            for (String timeSlot : timeList) {
+                dentistTimetxt.addItem(timeSlot);
             }
+            dentistTimetxt.setEnabled(true);
+        } else {
+            dentistTimetxt.removeAllItems();
+            dentistTimetxt.addItem("No time available");
         }
 
-    } catch (SQLException ex) {
-
-        JOptionPane.showMessageDialog(
+    } catch (Exception ex) {
+        javax.swing.JOptionPane.showMessageDialog(
                 this,
-                "Available time load failed.\n"
-                        + ex.getMessage(),
+                "Available time load failed.\n" + ex.getMessage(),
                 "Database Error",
-                JOptionPane.ERROR_MESSAGE
+                javax.swing.JOptionPane.ERROR_MESSAGE
         );
-
     } finally {
         updatingComboBoxes = false;
     }
@@ -340,10 +315,12 @@ public Create_Appoinment(int patientId, String patientName) {
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, -1, -1));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void createappointmentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createappointmentBtnActionPerformed
         
+                
         String patientName = PName.getText().trim();
         String patientAgeStr = PAge.getText().trim();
         String mobileNumber = PNumber.getText().trim();
@@ -406,20 +383,31 @@ public Create_Appoinment(int patientId, String patientName) {
                 return;
             }
 
-            try (PreparedStatement pst = con.prepareStatement(sql)) {
-                pst.setString(1, patientName);
-                pst.setInt(2, patientAge);
-                pst.setString(3, mobileNumber);
-                pst.setString(4, dentist);
-                pst.setDate(5, new java.sql.Date(date.getTime()));
-                pst.setString(6, time);
-                pst.setString(7, treatment);
+            try (PreparedStatement pst = con.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+    pst.setString(1, patientName);
+    pst.setInt(2, patientAge);
+    pst.setString(3, mobileNumber);
+    pst.setString(4, dentist);
+    pst.setDate(5, new java.sql.Date(date.getTime()));
+    pst.setString(6, time);
+    pst.setString(7, treatment);
 
-                int result = pst.executeUpdate();
-                if (result > 0) {
-                    JOptionPane.showMessageDialog(this, "Appointment created successfully!");
-                    
-                }
+    int result = pst.executeUpdate();
+    if (result > 0) {
+        
+        int generatedAppointmentId = -1;
+        try (ResultSet rsKeys = pst.getGeneratedKeys()) {
+            if (rsKeys.next()) {
+                generatedAppointmentId = rsKeys.getInt(1);
+            }
+        }
+
+        JOptionPane.showMessageDialog(this, "Appointment created successfully!");
+        
+        
+        generateAppointmentPDF(generatedAppointmentId, patientName, patientAge, mobileNumber, dentist, date, time, treatment);
+    }
+
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -492,4 +480,94 @@ public Create_Appoinment(int patientId, String patientName) {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
+    private void generateAppointmentPDF(int appointmentId, String name, int age, String mobile, String dentist, java.util.Date date, String time, String treatment) {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(date);
+
+        String userHome = System.getProperty("user.home");
+        File dir = new File(userHome + "/Desktop/Appointments");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String filePath = dir.getAbsolutePath() + "/Appointment_" + appointmentId + ".pdf";
+
+        try {
+            // OpenPDF Document initialization
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            document.open();
+
+            // Clinic Header Fonts & Colors
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, new Color(0, 102, 153));
+            Paragraph title = new Paragraph("SUNRISE DENTAL CLINIC", titleFont);
+            title.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(title);
+
+            Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.DARK_GRAY);
+            Paragraph subtitle = new Paragraph("Official Appointment Slip\n\n", subtitleFont);
+            subtitle.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(subtitle);
+
+            // Table with 2 columns
+            PdfPTable table = new PdfPTable(2);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[]{2f, 3f});
+
+            addTableCell(table, "Appointment ID:", true);
+            addTableCell(table, "APN-" + appointmentId, false);
+
+            addTableCell(table, "Patient Name:", true);
+            addTableCell(table, name, false);
+
+            addTableCell(table, "Patient Age:", true);
+            addTableCell(table, String.valueOf(age), false);
+
+            addTableCell(table, "Mobile Number:", true);
+            addTableCell(table, mobile, false);
+
+            addTableCell(table, "Dentist Name:", true);
+            addTableCell(table, dentist, false);
+
+            addTableCell(table, "Appointment Date:", true);
+            addTableCell(table, dateStr, false);
+
+            addTableCell(table, "Appointment Time:", true);
+            addTableCell(table, time, false);
+
+            addTableCell(table, "Treatment Type:", true);
+            addTableCell(table, treatment, false);
+
+            addTableCell(table, "Status:", true);
+            addTableCell(table, "Pending Confirmation", false);
+
+            document.add(table);
+
+            // Footer Note
+            Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.GRAY);
+            Paragraph footer = new Paragraph("\nThank you for choosing Sunrise Dental! Please arrive 10 minutes prior to your time slot.", footerFont);
+            footer.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(footer);
+
+            document.close();
+
+            JOptionPane.showMessageDialog(this, "Appointment PDF successfully downloaded to your Desktop under 'Appointments' folder!\nPath: " + filePath);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error generating PDF: " + e.getMessage(), "PDF Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void addTableCell(PdfPTable table, String text, boolean isHeader) {
+        Font font = FontFactory.getFont(FontFactory.HELVETICA, 11, isHeader ? Font.BOLD : Font.NORMAL);
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setPadding(8);
+        if (isHeader) {
+            cell.setBackgroundColor(new Color(230, 230, 230));
+        }
+        table.addCell(cell);
+    }
+    
 }

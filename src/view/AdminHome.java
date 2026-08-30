@@ -5,13 +5,14 @@
  */
 package view;
 
-import db.DBconnect;
+import Model.DBconnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 
 
 
@@ -23,46 +24,67 @@ public class AdminHome extends javax.swing.JFrame {
     public AdminHome() {
         initComponents();
         loadAllAppointments();
+        loadTotalAppointments();
+        loadAvailableDentistSchedules();
     }
+    
+    private void loadAvailableDentistSchedules() {
+    String sql = "SELECT COUNT(*) AS total FROM approved_dentist_schedule";
+
+    try (Connection con = DBconnect.getConnection();
+         PreparedStatement pst = con.prepareStatement(sql);
+         ResultSet rs = pst.executeQuery()) {
+
+        if (rs.next()) {
+            int totalSchedules = rs.getInt("total");
+            jLabel7.setText(String.valueOf(totalSchedules));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+    
+    private void loadTotalAppointments() {
+    String sql = "SELECT COUNT(*) AS total FROM appointments";
+
+    try (Connection con = DBconnect.getConnection();
+         PreparedStatement pst = con.prepareStatement(sql);
+         ResultSet rs = pst.executeQuery()) {
+
+        if (rs.next()) {
+            int total = rs.getInt("total");
+            jLabel6.setText(String.valueOf(total));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
     
     private void loadAllAppointments() {
 
-    DefaultTableModel tableModel =
-            (DefaultTableModel) jTable1.getModel();
-
-    
+    DefaultTableModel tableModel = (DefaultTableModel) jTable1.getModel();
     tableModel.setRowCount(0);
 
-    String sql =
-            "SELECT p.full_name AS patient_name, "
-            + "a.dentist_name, "
-            + "a.appointment_time, "
-            + "a.treatment_type "
-            + "FROM appointments a "
-            + "INNER JOIN patient_login p "
-            + "ON a.patient_id = p.patient_id "
-            + "ORDER BY a.appointment_date ASC, "
-            + "a.appointment_time ASC";
+    String sql = "SELECT appointment_date, PName, dentist_name, appointment_time, treatment_type "
+               + "FROM appointments "
+               + "ORDER BY appointment_date ASC, appointment_time ASC";
 
     try (Connection con = DBconnect.getConnection()) {
 
         if (con == null) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Database connection failed."
-            );
+            JOptionPane.showMessageDialog(this, "Database connection failed.");
             return;
         }
 
-        try (PreparedStatement pst =
-                con.prepareStatement(sql);
-
+        try (PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
 
             while (rs.next()) {
-
                 Object[] appointmentRow = {
-                    rs.getString("patient_name"),
+                    rs.getString("appointment_date"),
+                    rs.getString("PName"),
                     rs.getString("dentist_name"),
                     rs.getString("appointment_time"),
                     rs.getString("treatment_type")
@@ -73,12 +95,7 @@ public class AdminHome extends javax.swing.JFrame {
         }
 
     } catch (SQLException e) {
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Database Error: " + e.getMessage()
-        );
-
+        JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
         e.printStackTrace();
     }
 }
@@ -100,6 +117,7 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -109,6 +127,7 @@ public class AdminHome extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -202,6 +221,9 @@ public class AdminHome extends javax.swing.JFrame {
 
         jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 280, -1, -1));
 
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Sunrise logo Light Small-01.png"))); // NOI18N
+        jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 776));
 
         jPanel7.setBackground(new java.awt.Color(0, 102, 153));
@@ -275,20 +297,25 @@ public class AdminHome extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Patient", "Dentist", "Time", "Treatment Type"
+                "Date", "Patient", "Dentist", "Time", "Treatment Type"
             }
         ));
+        jTable1.setRowHeight(25);
         jScrollPane2.setViewportView(jTable1);
 
         jScrollPane1.setViewportView(jScrollPane2);
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 210, 710, 310));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 230, 710, 310));
+
+        jLabel8.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
+        jLabel8.setText("Appointment List");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 180, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -302,6 +329,7 @@ public class AdminHome extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
@@ -360,6 +388,8 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

@@ -5,7 +5,7 @@
  */
 package view;
 
-import db.DBconnect;
+import Model.DBconnect;
 import java.sql.Connection;
 
 /**

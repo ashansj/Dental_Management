@@ -1,7 +1,7 @@
 
 
 package view;
-import db.DBconnect;
+import Model.DBconnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -162,6 +162,7 @@ public class PatientSignUp extends javax.swing.JFrame {
         getContentPane().add(pwstxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 451, 360, 40));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void createPatientAccBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPatientAccBtnActionPerformed

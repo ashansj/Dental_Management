@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import db.DBconnect;
+import Model.DBconnect;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -436,6 +436,7 @@ public class AdminDentist extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
@@ -550,7 +551,7 @@ public class AdminDentist extends javax.swing.JFrame {
         sql = "UPDATE dentist_details SET name=?, contact_no=?, address=? WHERE email=?";
     }
 
-    try (Connection conn = db.DBconnect.getConnection();
+    try (Connection conn = Model.DBconnect.getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
         pstmt.setString(1, name);
@@ -598,7 +599,7 @@ public class AdminDentist extends javax.swing.JFrame {
     // SQL query to search across all four columns using LIKE operator
     String sql = "SELECT name, contact_no, address, email FROM dentist_details WHERE name LIKE ? OR contact_no LIKE ? OR address LIKE ? OR email LIKE ?";
 
-    try (Connection conn = db.DBconnect.getConnection();
+    try (Connection conn = Model.DBconnect.getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
         // Add wildcards (%) to search for partial matches
