@@ -151,68 +151,79 @@ public class LoginView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SignupbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignupbtnActionPerformed
-        
+        PatientSignUp signUp = new PatientSignUp();
+        signUp.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_SignupbtnActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
         String email = Emailtxt.getText().trim();
-    String password = new String(pwstxt.getPassword()).trim(); // Use getPassword() if it's a JPasswordField
-    
-    // Validate if fields are empty
-    if(email.isEmpty() || password.isEmpty()){
-        JOptionPane.showMessageDialog(this, "Please enter both email and password!");
-        return;
-    }
-    
-    try {
-        // Establish connection to your database (Replace DatabaseConnection with your connection utility class)
-        Connection con = DBconnect.getConnection();
+        String password = new String(pwstxt.getPassword()).trim(); 
         
-        // 1. Check in patient_login table first
-        String patientQuery = "SELECT * FROM patient_login WHERE email = ? AND password = ?";
-        PreparedStatement pstPatient = con.prepareStatement(patientQuery);
-        pstPatient.setString(1, email);
-        pstPatient.setString(2, password);
-        ResultSet rsPatient = pstPatient.executeQuery();
+        // Validate if fields are empty
+        if(email.isEmpty() || password.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Please enter both email and password!");
+            return;
+        }
         
-        if(rsPatient.next()){
-            // If patient credentials are valid
-            JOptionPane.showMessageDialog(this, "Patient Login Successful!");
-            
-            // Open PatientDashboardView and close current login window
-            new PatientDashboardView().setVisible(true);
+        // 1. Check for Admin Login
+        if(email.equals("Sunrise123") && password.equals("123456")){
+            JOptionPane.showMessageDialog(this, "Admin Login Successful!");
+            // TODO: Open Admin Dashboard View here if available
+            // new AdminDashboardView().setVisible(true);
             this.dispose();
             return;
         }
         
-        // 2. If not found in patients, check in dentist_details table
-        String dentistQuery = "SELECT * FROM dentist_details WHERE email = ? AND password = ?";
-        PreparedStatement pstDentist = con.prepareStatement(dentistQuery);
-        pstDentist.setString(1, email);
-        pstDentist.setString(2, password);
-        ResultSet rsDentist = pstDentist.executeQuery();
-        
-        if(rsDentist.next()){
-            // If dentist credentials are valid
-            JOptionPane.showMessageDialog(this, "Dentist Login Successful!");
-            
-            
-            String doctorNameFromDB = rsDentist.getString("name");
-            
-            
-            DentistUpdateView updateView = new DentistUpdateView(doctorNameFromDB);
-            updateView.setVisible(true);
+        // 2. Check for Receptionist Login
+        if(email.equals("Rec") && password.equals("1234")){
+            JOptionPane.showMessageDialog(this, "Receptionist Login Successful!");
+            ReceptionistDashboard Receptionist = new ReceptionistDashboard();
+            Receptionist.setVisible(true);
             this.dispose();
             return;
         }
         
-        // 3. If credentials don't match in either table
-        JOptionPane.showMessageDialog(this, "Invalid Email or Password!", "Access Denied", JOptionPane.ERROR_MESSAGE);
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Database Connection Error: " + e.getMessage());
-    }
+        try {
+            Connection con = DBconnect.getConnection();
+            
+            // 3. Check in patient_login table
+            String patientQuery = "SELECT * FROM patient_login WHERE email = ? AND password = ?";
+            PreparedStatement pstPatient = con.prepareStatement(patientQuery);
+            pstPatient.setString(1, email);
+            pstPatient.setString(2, password);
+            ResultSet rsPatient = pstPatient.executeQuery();
+            
+            if(rsPatient.next()){
+                JOptionPane.showMessageDialog(this, "Patient Login Successful!");
+                new PatientDashboardView().setVisible(true);
+                this.dispose();
+                return;
+            }
+            
+            // 4. Check in dentist_details table
+            String dentistQuery = "SELECT * FROM dentist_details WHERE email = ? AND password = ?";
+            PreparedStatement pstDentist = con.prepareStatement(dentistQuery);
+            pstDentist.setString(1, email);
+            pstDentist.setString(2, password);
+            ResultSet rsDentist = pstDentist.executeQuery();
+            
+            if(rsDentist.next()){
+                JOptionPane.showMessageDialog(this, "Dentist Login Successful!");
+                String doctorNameFromDB = rsDentist.getString("name");
+                DentistUpdateView updateView = new DentistUpdateView(doctorNameFromDB);
+                updateView.setVisible(true);
+                this.dispose();
+                return;
+            }
+            
+            // 5. If credentials don't match anywhere
+            JOptionPane.showMessageDialog(this, "Invalid Email or Password!", "Access Denied", JOptionPane.ERROR_MESSAGE);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Database Connection Error: " + e.getMessage());
+        }
 
 
     }//GEN-LAST:event_signInbtnActionPerformed
