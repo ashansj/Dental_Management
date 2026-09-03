@@ -1,30 +1,27 @@
 
-
 package view;
-import Model.DBconnect;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
+import Controller.PatientController;
 
 public class PatientSignUp extends javax.swing.JFrame {
 
+    private PatientController patientController;
 
     public PatientSignUp() {
         initComponents();
-        
-        
+        patientController = new PatientController();
     }
     
     private void clearFields() {
-    fnametxt.setText("");
-    emailtxt.setText("");
-    dobtxt.setText("");
-    nictxt.setText("");
-    contactnotxt.setText("");
-    pwstxt.setText("");
-    confirmpwstxt.setText("");
-    addresstxt.setText("");
-}
+        fnametxt.setText("");
+        emailtxt.setText("");
+        dobtxt.setText("");
+        nictxt.setText("");
+        contactnotxt.setText("");
+        pwstxt.setText("");
+        confirmpwstxt.setText("");
+        addresstxt.setText("");
+    }
 
 
     @SuppressWarnings("unchecked")
@@ -175,58 +172,30 @@ public class PatientSignUp extends javax.swing.JFrame {
         String confirmPws = new String(confirmpwstxt.getPassword());
         String address = addresstxt.getText().trim();
         
-        
-        if (fullName.isEmpty() || email.isEmpty() || dob.isEmpty() || nic.isEmpty() || 
-        contactNo.isEmpty() || password.isEmpty() || address.isEmpty()) {
-        
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Please Enter details!", 
-            "Warning", 
-            javax.swing.JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-        if (!password.equals(confirmPws)) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Passwords not match!", 
-            "Error", 
-            javax.swing.JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-        
-        try {
 
-        Connection con = DBconnect.getConnection();
-
+        String result = patientController.registerPatient(fullName, email, dob, nic, contactNo, password, confirmPws);
         
-        String sql = "INSERT INTO patient_login (full_name, email, dob, nic, contact_no, password, address) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        
-        PreparedStatement pst = con.prepareStatement(sql);
-        pst.setString(1, fullName);
-        pst.setString(2, email);
-        pst.setString(3, dob);
-        pst.setString(4, nic);
-        pst.setString(5, contactNo);
-        pst.setString(6, password);
-        pst.setString(7, address);
-
-        int rowsInserted = pst.executeUpdate();
-
-        if (rowsInserted > 0) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Patient registed!", 
-                "Success", 
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            
-            
-            clearFields();
+        switch (result) {
+            case "EMPTY_FIELDS":
+                javax.swing.JOptionPane.showMessageDialog(this, "Please Enter details!", "Warning", javax.swing.JOptionPane.WARNING_MESSAGE);
+                break;
+            case "PASSWORD_MISMATCH":
+                javax.swing.JOptionPane.showMessageDialog(this, "Passwords not match!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                break;
+            case "SUCCESS":
+                javax.swing.JOptionPane.showMessageDialog(this, "Patient registered successfully!", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+                break;
+            default:
+                if (result.startsWith("DB_ERROR")) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Database Error: " + result, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+                break;
         }
-        
-        } catch (Exception e) {
-    javax.swing.JOptionPane.showMessageDialog(this, 
-        "Database Error: " + e.getMessage(), 
-        "Error", 
-        javax.swing.JOptionPane.ERROR_MESSAGE);
-}
+                                                       
+
+
+    
         
     }//GEN-LAST:event_createPatientAccBtnActionPerformed
 

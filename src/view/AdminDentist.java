@@ -1,87 +1,50 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
-import javax.swing.JOptionPane;
+import Model.DBconnect;
+import controller.AdminDentistController;
+import Model.Dentist;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import Model.DBconnect;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-
-
 
 public class AdminDentist extends javax.swing.JFrame {
-    
-    
-    public void loadDentistSchedule() {
-    try {
-        DefaultTableModel dtm = (DefaultTableModel) jtable2.getModel();
-        dtm.setRowCount(0); // Clear existing rows
-        
-        Connection con = DBconnect.getConnection();
-        Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM dentist");
-        
-        while (rs.next()) {
-            Object[] row = {
-                rs.getString("work_date"),
-                rs.getString("doctor_name"),
-                rs.getString("start_time"),
-                rs.getString("end_time")
-            };
-            dtm.addRow(row);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error loading data: " + e.getMessage());
-    }
-}
 
-    
-    private final String url = "jdbc:mysql://localhost:3306/dental_clinic_db";
-    private final String user = "root";
-    private final String password = "";
-    
+    private AdminDentistController controller;
+
     public AdminDentist() {
         initComponents();
+        controller = new AdminDentistController();
         loadDentistDetails();
         loadDentistSchedule();
     }
-    
+
     public void loadDentistDetails() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0); 
-
-        String sql = "SELECT name, contact_no, address, email FROM dentist_details";
-
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-
-            while (rs.next()) {
-                String name = rs.getString("name");
-                String contact = rs.getString("contact_no");
-                String address = rs.getString("address");
-                String email = rs.getString("email");
-
-                
-                model.addRow(new Object[]{name, contact, address, email});
+        model.setRowCount(0);
+        List<Dentist> list = controller.loadDentists();
+        if (list != null) {
+            for (Dentist d : list) {
+                model.addRow(new Object[]{d.getName(), d.getContactNo(), d.getAddress(), d.getEmail()});
             }
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Data Load Error: " + ex.getMessage());
         }
     }
-    
+
+    public void loadDentistSchedule() {
+        DefaultTableModel dtm = (DefaultTableModel) jtable2.getModel();
+        dtm.setRowCount(0);
+        List<Dentist> list = controller.loadSchedules();
+        if (list != null) {
+            for (Dentist d : list) {
+                dtm.addRow(new Object[]{d.getWorkDate(), d.getName(), d.getStartTime(), d.getEndTime()});
+            }
+        }
+    }
+
     private void clearFields() {
         DName.setText("");
         DNo.setText("");
@@ -90,7 +53,6 @@ public class AdminDentist extends javax.swing.JFrame {
         DPassword.setText("");
         ReDPassword.setText("");
     }
-    
     
 
     /**
@@ -452,49 +414,26 @@ public class AdminDentist extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void CreateDAccountBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateDAccountBtnActionPerformed
-        String name = DName.getText().trim();
-    String contactNo = DNo.getText().trim();
-    String address = Daddress.getText().trim();
-    String email = DEmail.getText().trim();
-    String password = new String(DPassword.getPassword());
-    String rePassword = new String(ReDPassword.getPassword());
-    
-    if (name.isEmpty() || contactNo.isEmpty() || address.isEmpty() || email.isEmpty() || password.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        String result = controller.createAccount(
+            DName.getText().trim(), DNo.getText().trim(), Daddress.getText().trim(),
+            DEmail.getText().trim(), new String(DPassword.getPassword()), new String(ReDPassword.getPassword())
+        );
 
-    if (!password.equals(rePassword)) {
-        JOptionPane.showMessageDialog(this, "Passwords do not match!", "Password Mismatch", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-    
-    String sql = "INSERT INTO dentist_details (name, contact_no, address, email, password) VALUES (?, ?, ?, ?, ?)";
-    
-    try (Connection conn = DBconnect.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        pstmt.setString(1, name);
-        pstmt.setString(2, contactNo);
-        pstmt.setString(3, address);
-        pstmt.setString(4, email);
-        pstmt.setString(5, password);
-
-        int rowsInserted = pstmt.executeUpdate();
-        if (rowsInserted > 0) {
-            JOptionPane.showMessageDialog(this, "Dentist account created successfully!");
-            clearFields();
-            loadDentistDetails();
+        switch (result) {
+            case "EMPTY_FIELDS": JOptionPane.showMessageDialog(this, "Please fill in all fields."); break;
+            case "PASSWORD_MISMATCH": JOptionPane.showMessageDialog(this, "Passwords do not match!"); break;
+            case "SUCCESS":
+                JOptionPane.showMessageDialog(this, "Dentist account created successfully!");
+                clearFields();
+                loadDentistDetails();
+                break;
+            default: JOptionPane.showMessageDialog(this, result); break;
         }
+                                                     
 
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
-    
-
-
-
-    
+                                     
+        
+          
     
     }//GEN-LAST:event_CreateDAccountBtnActionPerformed
 
@@ -521,120 +460,42 @@ public class AdminDentist extends javax.swing.JFrame {
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
       
-    String name = DName.getText().trim();
-    String contactNo = DNo.getText().trim();
-    String address = Daddress.getText().trim();
-    String email = DEmail.getText().trim();
-    String password = new String(DPassword.getPassword());
-    String rePassword = new String(ReDPassword.getPassword());
+    String result = controller.updateAccount(
+            DName.getText().trim(), DNo.getText().trim(), Daddress.getText().trim(),
+            DEmail.getText().trim(), new String(DPassword.getPassword()), new String(ReDPassword.getPassword())
+        );
 
-    // Validate if basic fields are empty
-    if (name.isEmpty() || contactNo.isEmpty() || address.isEmpty() || email.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please select a record from the table to edit and fill all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    String sql;
-    boolean updatePassword = false;
-
-    // Check if user wants to update the password
-    if (!password.isEmpty()) {
-        if (!password.equals(rePassword)) {
-            JOptionPane.showMessageDialog(this, "Passwords do not match!", "Password Mismatch", JOptionPane.WARNING_MESSAGE);
-            return;
+        switch (result) {
+            case "EMPTY_FIELDS": JOptionPane.showMessageDialog(this, "Please select a record and fill required fields."); break;
+            case "PASSWORD_MISMATCH": JOptionPane.showMessageDialog(this, "Passwords do not match!"); break;
+            case "SUCCESS":
+                JOptionPane.showMessageDialog(this, "Dentist account updated successfully!");
+                clearFields();
+                loadDentistDetails();
+                break;
+            default: JOptionPane.showMessageDialog(this, "Update failed."); break;
         }
-        // Query to update all fields including password
-        sql = "UPDATE dentist_details SET name=?, contact_no=?, address=?, password=? WHERE email=?";
-        updatePassword = true;
-    } else {
-        // Query to update fields without changing the password
-        sql = "UPDATE dentist_details SET name=?, contact_no=?, address=? WHERE email=?";
-    }
-
-    try (Connection conn = Model.DBconnect.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        pstmt.setString(1, name);
-        pstmt.setString(2, contactNo);
-        pstmt.setString(3, address);
-
-        if (updatePassword) {
-            pstmt.setString(4, password);
-            pstmt.setString(5, email);
-        } else {
-            pstmt.setString(4, email);
-        }
-
-        int rowsUpdated = pstmt.executeUpdate();
-        if (rowsUpdated > 0) {
-            JOptionPane.showMessageDialog(this, "Dentist account updated successfully!");
-            clearFields();
-            loadDentistDetails();
-        } else {
-            JOptionPane.showMessageDialog(this, "Update failed. Email address cannot be changed as it is used for identification.", "Update Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
 
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void Searchbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Searchbtn1ActionPerformed
                                    
     String keyword = searchtxt.getText().trim();
-
-    // Check if the search text field is empty
-    if (keyword.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please enter a keyword to search.", "Input Required", JOptionPane.WARNING_MESSAGE);
-        loadDentistDetails(); // Load all data if search is empty
-        return;
-    }
-
-    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
-    
-    // Clear the table before displaying search results
-    model.setRowCount(0); 
-
-    // SQL query to search across all four columns using LIKE operator
-    String sql = "SELECT name, contact_no, address, email FROM dentist_details WHERE name LIKE ? OR contact_no LIKE ? OR address LIKE ? OR email LIKE ?";
-
-    try (Connection conn = Model.DBconnect.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        // Add wildcards (%) to search for partial matches
-        String searchPattern = "%" + keyword + "%";
-        
-        pstmt.setString(1, searchPattern);
-        pstmt.setString(2, searchPattern);
-        pstmt.setString(3, searchPattern);
-        pstmt.setString(4, searchPattern);
-
-        try (ResultSet rs = pstmt.executeQuery()) {
-            boolean hasResults = false;
-            
-            // Iterate through the results and add to the table
-            while (rs.next()) {
-                hasResults = true;
-                String name = rs.getString("name");
-                String contact = rs.getString("contact_no");
-                String address = rs.getString("address");
-                String email = rs.getString("email");
-                
-                model.addRow(new Object[]{name, contact, address, email});
-            }
-            
-            // Show a message if no matching records are found
-            if (!hasResults) {
-                JOptionPane.showMessageDialog(this, "No matching records found.", "Search Result", JOptionPane.INFORMATION_MESSAGE);
-                loadDentistDetails(); // Reload original data
-                searchtxt.setText(""); // Clear the text field
-            }
+        if (keyword.isEmpty()) {
+            loadDentistDetails();
+            return;
         }
-
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, "Search Error: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-    }
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        List<Dentist> list = controller.searchDentists(keyword);
+        if (list != null && !list.isEmpty()) {
+            for (Dentist d : list) {
+                model.addRow(new Object[]{d.getName(), d.getContactNo(), d.getAddress(), d.getEmail()});
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No matching records found.");
+            loadDentistDetails();
+        }
 
     }//GEN-LAST:event_Searchbtn1ActionPerformed
 
@@ -694,68 +555,44 @@ public class AdminDentist extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int selectedRow = jtable2.getSelectedRow();
-    
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Please select a row to approve.");
-        return;
-    }
-    
-    try {
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row to approve.");
+            return;
+        }
         DefaultTableModel dtm = (DefaultTableModel) jtable2.getModel();
         String workDate = dtm.getValueAt(selectedRow, 0).toString();
         String doctorName = dtm.getValueAt(selectedRow, 1).toString();
         String startTime = dtm.getValueAt(selectedRow, 2).toString();
         String endTime = dtm.getValueAt(selectedRow, 3).toString();
-        
-        Connection con = DBconnect.getConnection();
-        
-        // 1. Insert data into approved_dentist_schedule table
-        java.sql.PreparedStatement pst = con.prepareStatement("INSERT INTO approved_dentist_schedule (work_date, doctor_name, start_time, end_time) VALUES (?, ?, ?, ?)");
-        pst.setString(1, workDate);
-        pst.setString(2, doctorName);
-        pst.setString(3, startTime);
-        pst.setString(4, endTime);
-        pst.executeUpdate();
-        
-        // 2. Delete data from the original dentist table so it disappears from jtable2
-        Statement st = con.createStatement();
-        st.executeUpdate("DELETE FROM dentist WHERE doctor_name='" + doctorName + "' AND work_date='" + workDate + "' AND start_time='" + startTime + "'");
-        
-        JOptionPane.showMessageDialog(this, "Schedule approved successfully.");
-        
-        // 3. Refresh jtable2 to reflect the changes
-        loadDentistSchedule();
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-    }
+
+        boolean success = controller.approveSchedule(workDate, doctorName, startTime, endTime);
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Schedule approved successfully.");
+            loadDentistSchedule();
+        } else {
+            JOptionPane.showMessageDialog(this, "Approval failed.");
+        }
+    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int selectedRow = jtable2.getSelectedRow();
-    
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Please select a row to remove.");
-        return;
-    }
-    
-    try {
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row to remove.");
+            return;
+        }
         DefaultTableModel dtm = (DefaultTableModel) jtable2.getModel();
         String doctorName = dtm.getValueAt(selectedRow, 1).toString();
         String workDate = dtm.getValueAt(selectedRow, 0).toString();
-        
-        Connection con = DBconnect.getConnection();
-        Statement st = con.createStatement();
-        st.executeUpdate("DELETE FROM dentist WHERE doctor_name='" + doctorName + "' AND work_date='" + workDate + "'");
-        
-        JOptionPane.showMessageDialog(this, "Record removed successfully.");
-        loadDentistSchedule(); // Refresh table
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-    }
+
+        boolean success = controller.removeSchedule(doctorName, workDate);
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Record removed successfully.");
+            loadDentistSchedule();
+        } else {
+            JOptionPane.showMessageDialog(this, "Removal failed.");
+        }
+    
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

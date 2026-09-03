@@ -91,9 +91,6 @@ public class AdminPatient extends javax.swing.JFrame {
         createPatientAccountBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        searchtxt = new javax.swing.JTextField();
-        Searchbtn1 = new javax.swing.JButton();
-        clearBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -238,23 +235,6 @@ public class AdminPatient extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 170, 710, 260));
-        jPanel2.add(searchtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, 380, -1));
-
-        Searchbtn1.setText("Search");
-        Searchbtn1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Searchbtn1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(Searchbtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 120, 100, -1));
-
-        clearBtn.setText("Clear");
-        clearBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearBtnActionPerformed(evt);
-            }
-        });
-        jPanel2.add(clearBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 120, 100, -1));
 
         editBtn.setBackground(new java.awt.Color(204, 204, 204));
         editBtn.setText("Edit Data");
@@ -435,14 +415,6 @@ public class AdminPatient extends javax.swing.JFrame {
     
     }//GEN-LAST:event_editBtnActionPerformed
 
-    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
-
-    }//GEN-LAST:event_clearBtnActionPerformed
-
-    private void Searchbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Searchbtn1ActionPerformed
-
-    }//GEN-LAST:event_Searchbtn1ActionPerformed
-
     private void createPatientAccountBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPatientAccountBtnActionPerformed
         PatientSignUp patientAccount = new PatientSignUp();
         patientAccount.setVisible(true);
@@ -526,9 +498,7 @@ public class AdminPatient extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField Emailtxt;
     private javax.swing.JTextField Fnametxt;
-    private javax.swing.JButton Searchbtn1;
     private javax.swing.JTextField addresstxt;
-    private javax.swing.JButton clearBtn;
     private javax.swing.JTextField contactNotxt;
     private javax.swing.JButton createPatientAccountBtn;
     private javax.swing.JButton deleteBtn;
@@ -551,6 +521,5 @@ public class AdminPatient extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField searchtxt;
     // End of variables declaration//GEN-END:variables
 }
