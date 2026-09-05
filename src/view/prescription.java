@@ -144,6 +144,11 @@ public class prescription extends javax.swing.JFrame {
         jPanel16.setBounds(30, 230, 260, 54);
 
         jPanel14.setBackground(new java.awt.Color(0, 146, 219));
+        jPanel14.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel14MouseClicked(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -449,6 +454,7 @@ public class prescription extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel13MouseClicked
@@ -582,6 +588,10 @@ public class prescription extends javax.swing.JFrame {
     
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jPanel14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel14MouseClicked
+        Util.HelpUtil.showDentistHelp(this, "prescription");
+    }//GEN-LAST:event_jPanel14MouseClicked
 
     /**
      * @param args the command line arguments

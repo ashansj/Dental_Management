@@ -118,6 +118,11 @@ public class DentistUpdateView extends javax.swing.JFrame {
         jPanel3.setBounds(30, 160, 260, 54);
 
         jPanel7.setBackground(new java.awt.Color(0, 146, 219));
+        jPanel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel7MouseClicked(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
@@ -399,6 +404,7 @@ public class DentistUpdateView extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
@@ -446,6 +452,10 @@ public class DentistUpdateView extends javax.swing.JFrame {
     Pdetails.setVisible(true);
     this.dispose(); 
     }//GEN-LAST:event_jPanel6MouseClicked
+
+    private void jPanel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel7MouseClicked
+        Util.HelpUtil.showDentistHelp(this, "schedule");
+    }//GEN-LAST:event_jPanel7MouseClicked
 
     /**
      * @param args the command line arguments
